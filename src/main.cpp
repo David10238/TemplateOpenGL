@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <glad/glad.h> // this needs to be included before GLFW
 #include <GLFW/glfw3.h>
 
@@ -34,6 +35,12 @@ int main() {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+    // earliest I can call OpenGL functions
+    std::string vendor(reinterpret_cast<const char *>(glGetString(GL_VENDOR)));
+    std::string renderer(reinterpret_cast<const char *>(glGetString(GL_RENDERER)));
+    std::cout << "Vendor: " << vendor << "\n" << std::flush;
+    std::cout << "Renderer: " << renderer << "\n" << std::flush;
 
     glViewport(0, 0, WIDTH, HEIGHT);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
