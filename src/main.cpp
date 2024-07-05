@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include "graphics/OpenGLPlatform.h"
+#include "graphics/Shader.h"
 
 constexpr int WIDTH = 800;
 constexpr int HEIGHT = 600;
@@ -34,64 +35,7 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    // vertex shader
-
-    const char *vertexShaderSource = "#version 330 core\n"
-            "layout (location = 0) in vec3 aPos;\n"
-            "void main()\n"
-            "{\n"
-            "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-            "}\0";
-
-    unsigned int vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-    glCompileShader(vertexShader);
-
-    int success;
-    char infoLog[512];
-
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        // error handling
-        glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION::FAILED\n" << infoLog << "\n" << std::flush;
-    }
-
-    // fragment shader
-    const char *fragmentShaderSource = "#version 330 core\n"
-            "out vec4 FragColor;"
-            "void main()"
-            "{\n"
-            "FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-            "}\0";
-
-    unsigned int fragmentShader;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        // error handling
-        glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION::FAILED\n" << infoLog << "\n" << std::flush;
-    }
-
-    // link the shaders
-
-    unsigned int shaderProgram;
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success); // error handling
-    if (!success) {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-    }
-
-    glUseProgram(shaderProgram);
+    Shader myShader(RESOURCES_PATH "firstShader.vert", RESOURCES_PATH "firstShader.frag");
 
     // tell the vertex shader how to use the attributes
 
@@ -119,16 +63,14 @@ int main() {
         // rendering code here
         renderer.clearScreen(0.2f, 0.3f, 0.3f, 1.0f);
 
-        glUseProgram(shaderProgram);
+        myShader.use();
+
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         // poll events and swap buffers
         renderer.pollAndSwap();
     }
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
 
     return 0;
 }
