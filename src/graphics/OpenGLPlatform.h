@@ -18,7 +18,7 @@ public:
     ~OpenGLPlatform();
 
     // methods
-    bool shouldClose() const;
+    [[nodiscard]] bool shouldClose() const;
 
     void clearScreen(float read, float green, float blue, float alpha);
 
