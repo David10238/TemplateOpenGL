@@ -8,7 +8,7 @@
 #include "graphics/OpenGLPlatform.h"
 #include "graphics/Triangle.h"
 
-void processInput(OpenGLPlatform &renderer) {
+static void processInput(OpenGLPlatform &renderer) {
     GLFWwindow *window = renderer.window;
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
@@ -16,7 +16,7 @@ void processInput(OpenGLPlatform &renderer) {
 }
 
 // todo get this out of top level
-OpenGLPlatform renderer("OpenGlTemplate", 800, 600);
+static OpenGLPlatform renderer("OpenGlTemplate", 800, 600);
 
 int main() {
     std::cout << renderer.GPU_NAME << "\n" << std::flush;
