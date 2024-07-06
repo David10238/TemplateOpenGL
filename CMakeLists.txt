@@ -17,4 +17,6 @@ target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC RESOURCES_PATH="${CMAK
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_include_directories(${PROJECT_NAME} PUBLIC "thirdparty/glm")
+target_include_directories(${PROJECT_NAME} PUBLIC "thirdparty/stb_image")
+
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw glad)
