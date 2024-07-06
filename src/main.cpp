@@ -41,7 +41,7 @@ int main() {
         // rendering code here
         renderer.clearScreen(0.2f, 0.3f, 0.3f, 1.0f);
 
-        float translation = fabsf(sin(glfwGetTime()));
+        const float translation = fabsf(static_cast<float>(sin(glfwGetTime())));
 
         renderer.drawShape(triangle1, 1.0, 0.0, 1.0, 1.0);
         renderer.drawShape(triangle2.translate(translation, translation, 0.0), 1.0, 1.0, 1.0, 1.0);
