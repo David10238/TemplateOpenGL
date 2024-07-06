@@ -45,7 +45,8 @@ void OpenGLPlatform::constructShaders() {
                                                    RESOURCES_PATH "shaders/triangle.frag");
 }
 
-void OpenGLPlatform::drawShape(Triangle triangle, float red, float green, float blue, float alpha) {
+void OpenGLPlatform::drawShape(const Triangle &triangle, const float red, const float green, const float blue, const float alpha) {
+    // todo setting up stuff might night need to be called often
     unsigned int VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -71,8 +72,9 @@ void OpenGLPlatform::drawShape(Triangle triangle, float red, float green, float 
     glEnableVertexAttribArray(0);
 
 
+    // these lines have to be called every draw;
     triangleColorShader->use();
-
+    triangleColorShader->setFloat4("MyColor", red, green, blue, alpha);
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
