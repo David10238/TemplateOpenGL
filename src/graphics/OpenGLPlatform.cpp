@@ -2,6 +2,8 @@
 
 #include <stdexcept>
 
+#include "Triangle.h"
+
 void framebuffer_size_callback(GLFWwindow *window, const int width, const int height) {
     glViewport(0, 0, width, height);
 }
@@ -30,10 +32,49 @@ OpenGLPlatform::OpenGLPlatform(const char *title, const int width, const int hei
 
     glViewport(0, 0, width, height);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    constructShaders();
 }
 
 OpenGLPlatform::~OpenGLPlatform() {
     glfwTerminate();
+}
+
+void OpenGLPlatform::constructShaders() {
+    triangleColorShader = std::make_unique<Shader>(RESOURCES_PATH "triangle.vert",
+                                                   RESOURCES_PATH "triangle.frag");
+}
+
+void OpenGLPlatform::drawShape(Triangle triangle, float red, float green, float blue, float alpha) {
+    unsigned int VBO;
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(triangle.getVertices()), triangle.getVertices().data(), GL_STATIC_DRAW);
+
+    // tell the vertex shader how to use the attributes
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+    glEnableVertexAttribArray(0);
+
+    // setup a vertox attribute object
+
+    unsigned int VAO;
+    glGenVertexArrays(1, &VAO);
+    // ..:: Initialization code (done once (unless your object frequently changes)) :: ..
+    // 1. bind Vertex Array Object
+    glBindVertexArray(VAO);
+    // 2. copy our vertices array in a buffer for OpenGL to use
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(triangle.getVertices()), triangle.getVertices().data(), GL_STATIC_DRAW);
+    // 3. then set our vertex attributes pointers
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+    glEnableVertexAttribArray(0);
+
+
+    triangleColorShader->use();
+
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
 
