@@ -26,7 +26,7 @@ public:
 
     void clearScreen(float red, float green, float blue, float alpha);
 
-    void drawShape(Triangle &triangle, float red, float green, float blue, float alpha);
+    void drawShape(const Triangle &triangle, float red, float green, float blue, float alpha) const;
 
     void pollAndSwap();
 

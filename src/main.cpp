@@ -22,13 +22,13 @@ int main() {
 
     std::cout << renderer.GPU_NAME << "\n" << std::flush;
 
-    Triangle triangle1({
+    const Triangle triangle1({
         1.0f, 1.0f, 0.0f,
         0.5f, 1.0f, 0.0f,
         1.0f, 0.5f, 0.0f,
     });
 
-    Triangle triangle2({
+    const Triangle triangle2({
         -1.0f, -1.0f, 0.0f,
         -0.5f, -1.0f, 0.0f,
         -1.0f, -0.5f, 0.0f
