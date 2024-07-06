@@ -55,8 +55,8 @@ OpenGLPlatform::~OpenGLPlatform() {
 }
 
 void OpenGLPlatform::constructShaders() {
-    triangleColorShader = std::make_unique<Shader>(RESOURCES_PATH "shaders/triangle.vert",
-                                                   RESOURCES_PATH "shaders/triangle.frag");
+    triangleColorShader = std::make_unique<Shader>(RESOURCES_PATH "shaders/solid_shape.vert",
+                                                   RESOURCES_PATH "shaders/solid_shape.frag");
 }
 
 bool OpenGLPlatform::shouldClose() const {
