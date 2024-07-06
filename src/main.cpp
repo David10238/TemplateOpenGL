@@ -8,18 +8,17 @@
 #include "graphics/OpenGLPlatform.h"
 #include "graphics/Triangle.h"
 
-constexpr int WIDTH = 800;
-constexpr int HEIGHT = 600;
-
-void processInput(GLFWwindow *window) {
+void processInput(OpenGLPlatform &renderer) {
+    GLFWwindow *window = renderer.window;
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
 }
 
-int main() {
-    OpenGLPlatform renderer("OpenGlTemplate", 800, 600);
+// todo get this out of top level
+OpenGLPlatform renderer("OpenGlTemplate", 800, 600);
 
+int main() {
     std::cout << renderer.GPU_NAME << "\n" << std::flush;
 
     const Triangle triangle1({
@@ -34,9 +33,16 @@ int main() {
         -1.0f, -0.5f, 0.0f
     });
 
+    glfwSetKeyCallback(renderer.window, [](GLFWwindow *window, int key, int scancode, int action, int mods) {
+        if (key == GLFW_KEY_F11 && action == GLFW_PRESS) {
+            renderer.toggleFullscreen();
+            std::cout << "Toggled Fullscreen\n" << std::flush;
+        }
+    });
+
     while (!renderer.shouldClose()) {
         // input
-        processInput(renderer.window);
+        processInput(renderer);
 
         // rendering code here
         renderer.clearScreen(0.2f, 0.3f, 0.3f, 1.0f);

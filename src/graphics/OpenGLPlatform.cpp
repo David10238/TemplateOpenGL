@@ -4,11 +4,19 @@
 
 #include "Triangle.h"
 
-void framebuffer_size_callback(GLFWwindow *window, const int width, const int height) {
-    glViewport(0, 0, width, height);
-}
+int OpenGLPlatform::width = 0;
+int OpenGLPlatform::resetWidth = 0;
+int OpenGLPlatform::height = 0;
+int OpenGLPlatform::resetHeight = 0;
+int OpenGLPlatform::resetX = 0;
+int OpenGLPlatform::resetY = 0;
 
 OpenGLPlatform::OpenGLPlatform(const char *title, const int width, const int height) {
+    OpenGLPlatform::width = width;
+    OpenGLPlatform::resetWidth = width;
+    OpenGLPlatform::height = height;
+    OpenGLPlatform::resetHeight = height;
+
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -36,6 +44,12 @@ OpenGLPlatform::OpenGLPlatform(const char *title, const int width, const int hei
     constructShaders();
 }
 
+void OpenGLPlatform::framebuffer_size_callback(GLFWwindow *window, const int width, const int height) {
+    glViewport(0, 0, width, height);
+    OpenGLPlatform::width = width;
+    OpenGLPlatform::height = height;
+}
+
 OpenGLPlatform::~OpenGLPlatform() {
     glfwTerminate();
 }
@@ -43,6 +57,41 @@ OpenGLPlatform::~OpenGLPlatform() {
 void OpenGLPlatform::constructShaders() {
     triangleColorShader = std::make_unique<Shader>(RESOURCES_PATH "shaders/triangle.vert",
                                                    RESOURCES_PATH "shaders/triangle.frag");
+}
+
+bool OpenGLPlatform::shouldClose() const {
+    return glfwWindowShouldClose(window);
+}
+
+void OpenGLPlatform::clearScreen(float red, float green, float blue, float alpha) {
+    glClearColor(red, green, blue, alpha);
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void OpenGLPlatform::pollAndSwap() {
+    glfwPollEvents();
+    glfwSwapBuffers(window);
+}
+
+void OpenGLPlatform::toggleFullscreen() {
+    fullscreen = !fullscreen;
+    if (fullscreen) {
+        glfwGetWindowPos(window, &resetX, &resetY);
+        glfwGetWindowSize(window, &resetWidth, &resetHeight);
+
+        GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+
+        const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+        glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, 0);
+    } else {
+        glfwSetWindowMonitor(window, nullptr, resetX, resetY, resetWidth, resetHeight, 0);
+    }
+}
+
+void OpenGLPlatform::setFullscreen(const bool fullscreen) {
+    if (this->fullscreen != fullscreen) {
+        toggleFullscreen();
+    }
 }
 
 void OpenGLPlatform::drawShape(const Triangle &triangle, const float red, const float green, const float blue,
@@ -78,19 +127,4 @@ void OpenGLPlatform::drawShape(const Triangle &triangle, const float red, const 
     triangleColorShader->setFloat4("MyColor", red, green, blue, alpha);
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 3);
-}
-
-
-bool OpenGLPlatform::shouldClose() const {
-    return glfwWindowShouldClose(window);
-}
-
-void OpenGLPlatform::clearScreen(float red, float green, float blue, float alpha) {
-    glClearColor(red, green, blue, alpha);
-    glClear(GL_COLOR_BUFFER_BIT);
-}
-
-void OpenGLPlatform::pollAndSwap() {
-    glfwPollEvents();
-    glfwSwapBuffers(window);
 }

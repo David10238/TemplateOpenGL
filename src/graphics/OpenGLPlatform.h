@@ -30,7 +30,16 @@ public:
 
     void pollAndSwap();
 
+    void toggleFullscreen();
+
+    void setFullscreen(bool fullscreen);
+
 private:
+    bool fullscreen = false;
+    static int resetWidth, resetHeight, height, width, resetX, resetY;
+
+    static void framebuffer_size_callback(GLFWwindow *window, int width, int height);
+
     void constructShaders();
 
     std::unique_ptr<Shader> triangleColorShader;
