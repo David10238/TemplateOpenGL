@@ -1,7 +1,3 @@
-//
-// Created by david on 7/5/2024.
-//
-
 #include "Shader.h"
 
 #include <glad/glad.h>

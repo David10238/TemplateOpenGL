@@ -8,9 +8,9 @@ class Triangle {
 public:
     explicit Triangle(const std::array<float, 3 * 3> &vertices);
 
-    std::array<float, 3 * 3> getVertices() const;
+    [[nodiscard]] std::array<float, 3 * 3> getVertices() const;
 
-    Triangle translate(float x, float y, float z);
+    [[nodiscard]] Triangle translate(float x, float y, float z) const;
 
 private:
     const std::array<float, 3 * 3> vertices;
